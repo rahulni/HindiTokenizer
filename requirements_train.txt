@@ -1,0 +1,22 @@
+# Core tokenization
+tokenizers==0.19.1
+
+# APIs & Web server (HuggingFace-style app)
+fastapi==0.111.0
+uvicorn==0.30.1
+
+# For regex-based Hindi cleaning
+regex==2024.4.16
+
+# For downloading, cleaning & decompression
+requests==2.32.3
+
+# Wikipedia extraction tool
+wikiextractor==3.0.6
+
+# For progress bars (optional but useful)
+tqdm==4.66.4
+
+# Utilities
+beautifulsoup4==4.12.3
+lxml==5.2.2
