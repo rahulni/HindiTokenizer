@@ -10,26 +10,37 @@ This project implements a BPE tokenizer specifically trained for Hindi text usin
 
 - ✅ **Streaming Training**: Processes large corpus files without memory overflow
 - ✅ **BPE Algorithm**: Byte Pair Encoding with configurable vocabulary size
-- ✅ **Web UI**: Interactive Gradio interface for encoding/decoding
+- ✅ **Interactive Web UI**: Color-coded, clickable Gradio interface with bidirectional highlighting
 - ✅ **REST API**: FastAPI backend for programmatic access
 - ✅ **Real-time Metrics**: Token count, compression ratio, and more
+- ✅ **Visual Token Mapping**: See word-to-token relationships with color coding
 - ✅ **HuggingFace Compatible**: Full integration with `transformers` library
 
 ## 🎯 Main Functions
 
 ### Encoding
-- Convert Hindi text into token IDs
-- Calculate token count and compression ratio
+- Convert Hindi text into token IDs with visual representation
+- Interactive word-to-token mapping with color coding
+- Calculate token count and compression ratio in real-time
 - Export token IDs as comma-separated values (CSV)
+- Click words to see corresponding tokens, click tokens to see words
 
 ### Decoding
-- Convert token IDs back to Hindi text
-- Handle invalid inputs gracefully
+- Convert token IDs back to Hindi text with visual representation
+- Interactive token-to-word mapping with color coding
+- Click words to see corresponding tokens, click tokens to see words
+- Handle invalid inputs gracefully with clear error messages
 
 ### Evaluation Metrics
-- **Compression Ratio**: Average characters per token (higher = better)
-- **Token Count**: Number of tokens generated
-- **UNK Rate**: Percentage of unknown tokens
+- **Compression Ratio**: Average characters per token (higher = better) - displayed in real-time
+- **Token Count**: Number of tokens generated - displayed in real-time
+- **UNK Rate**: Percentage of unknown tokens (shown during training evaluation)
+
+### Interactive Features
+- **Color-Coded Display**: Each token ID has a unique, consistent color
+- **Word-Token Mapping**: Visual representation of which tokens correspond to which words
+- **Bidirectional Highlighting**: Click elements to highlight related components
+- **Tooltips**: Hover over token IDs to see associated words
 
 ## 📊 Tokenizer Specifications
 
@@ -134,13 +145,35 @@ http://localhost:7860
 #### UI Features
 
 **Encode Tab:**
-- Enter Hindi text in the input box
-- View token count and compression ratio
-- Get token IDs as comma-separated values
+- **Input Textbox**: Enter Hindi text for tokenization
+- **📝 Input Text Section**: Interactive clickable view of input text with color-coded words
+  - Click any word to highlight corresponding token IDs
+  - Words are color-coded to match their token IDs
+- **Real-time Metrics**: 
+  - Token count (number of tokens generated)
+  - Compression ratio (characters per token)
+- **Token IDs Display**: 
+  - Color-coded token IDs with word labels
+  - Click token IDs to highlight corresponding words
+  - Each token ID shows the word(s) it represents
+- **Token IDs (CSV)**: Copy-ready comma-separated token IDs output
 
 **Decode Tab:**
-- Enter comma-separated token IDs
-- View decoded Hindi text
+- **Input Textbox**: Enter comma-separated token IDs
+- **📝 Decoded Text Section**: Interactive clickable view of decoded text
+  - Click any word to highlight corresponding token IDs
+  - Words are color-coded to match their token IDs
+- **Token IDs Display**: 
+  - Color-coded token IDs with word labels
+  - Click token IDs to highlight corresponding words
+  - Each token ID shows the word(s) it represents
+- **Decoded Text**: Copy-ready plain text output of decoded content
+
+**Interactive Highlighting:**
+- **Bidirectional Mapping**: Click words to see tokens, click tokens to see words
+- **Visual Feedback**: Highlighted elements show red borders and shadows
+- **Color Consistency**: Same token ID always uses the same color across all views
+- **Hover Effects**: Visual feedback when hovering over clickable elements
 
 ### REST API
 
@@ -292,6 +325,13 @@ HF_DIR = "tokenizer_hindi_bpe_8k_stream/hf"
 ### Normalization
 - NFKC normalization for consistent character representation
 - Handles various Unicode forms
+
+### UI Implementation
+- **Offset Mapping**: Uses tokenizer offset mapping for accurate word-to-token correspondence
+- **Color Generation**: Hash-based color generation ensures consistent colors for same token IDs
+- **Interactive JavaScript**: Client-side highlighting for instant feedback
+- **HTML Rendering**: Dynamic HTML generation with embedded click handlers
+- **Responsive Design**: Clean, modern interface with hover effects and transitions
 
 ## 🐛 Troubleshooting
 
