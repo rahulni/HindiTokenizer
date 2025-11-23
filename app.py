@@ -25,10 +25,17 @@ print("Tokenizer loaded: vocab =", tokenizer.vocab_size)
 # --------------------------------------
 
 def encode_text(text: str):
-    """Basic encode: returns token IDs as CSV."""
+    """Basic encode: returns token IDs as CSV, token count, and compression ratio."""
     enc = tokenizer(text, add_special_tokens=False)
-    csv_ids = ",".join(str(x) for x in enc["input_ids"])
-    return csv_ids
+    token_ids = enc["input_ids"]
+    token_count = len(token_ids)
+    csv_ids = ",".join(str(x) for x in token_ids)
+    
+    # Calculate compression ratio (characters per token)
+    char_count = len(text)
+    compression_ratio = char_count / token_count if token_count > 0 else 0.0
+    
+    return csv_ids, token_count, f"{compression_ratio:.2f}"
 
 def decode_ids(ids: str):
     """Decode from comma-separated IDs to text."""
@@ -81,9 +88,14 @@ with gr.Blocks(title="Hindi Tokenizer") as demo:
 
     with gr.Tab("Encode"):
         text_in = gr.Textbox(label="Enter text", lines=3)
+        
+        with gr.Row():
+            token_count_out = gr.Number(label="Token Count", precision=0)
+            compression_ratio_out = gr.Textbox(label="Compression Ratio (chars/token)", interactive=False)
+        
         ids_out = gr.Textbox(label="Token IDs", lines=8, max_lines=20)
         btn = gr.Button("Encode")
-        btn.click(encode_text, text_in, ids_out)
+        btn.click(encode_text, text_in, [ids_out, token_count_out, compression_ratio_out])
 
     with gr.Tab("Decode"):
         ids_in = gr.Textbox(label="Comma-separated token IDs", lines=4)
