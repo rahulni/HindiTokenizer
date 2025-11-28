@@ -365,7 +365,6 @@ def decode_endpoint(ids: str):
 highlight_js = """
 <script>
 let currentHighlighted = null;
-
 function clearHighlights() {
     if (currentHighlighted) {
         currentHighlighted.forEach(el => {
@@ -376,7 +375,6 @@ function clearHighlights() {
     }
     currentHighlighted = null;
 }
-
 function highlightToken(tokenIdx) {
     clearHighlights();
     const tokenEl = document.querySelector(`.token-tag[data-token-idx="${tokenIdx}"]`);
@@ -406,7 +404,6 @@ function highlightToken(tokenIdx) {
     
     currentHighlighted = highlighted;
 }
-
 function highlightWord(tokenIndicesStr) {
     clearHighlights();
     const tokenIndices = tokenIndicesStr.split(',');
@@ -432,7 +429,6 @@ function highlightWord(tokenIndicesStr) {
     
     currentHighlighted = highlighted;
 }
-
 function highlightDecodeToken(tokenIdx) {
     clearHighlights();
     const tokenEl = document.querySelector(`.decode-token-tag[data-token-idx="${tokenIdx}"]`);
@@ -456,7 +452,6 @@ function highlightDecodeToken(tokenIdx) {
     
     currentHighlighted = highlighted;
 }
-
 function highlightInputWord(tokenIndicesStr) {
     clearHighlights();
     const tokenIndices = tokenIndicesStr.split(',');
@@ -483,7 +478,6 @@ function highlightInputWord(tokenIndicesStr) {
     
     currentHighlighted = highlighted;
 }
-
 function highlightTokenId(tokenIdx) {
     clearHighlights();
     const tokenIdEl = document.querySelector(`.token-id-tag[data-token-idx="${tokenIdx}"]`);
@@ -511,7 +505,6 @@ function highlightTokenId(tokenIdx) {
     
     currentHighlighted = highlighted;
 }
-
 function highlightDecodeWord(tokenIndicesStr) {
     clearHighlights();
     const tokenIndices = tokenIndicesStr.split(',');
@@ -538,7 +531,6 @@ function highlightDecodeWord(tokenIndicesStr) {
     
     currentHighlighted = highlighted;
 }
-
 function highlightDecodeTokenId(tokenIdx) {
     clearHighlights();
     const tokenIdEl = document.querySelector(`.decode-token-id-tag[data-token-idx="${tokenIdx}"]`);
@@ -569,13 +561,29 @@ function highlightDecodeTokenId(tokenIdx) {
 </script>
 """
 
-with gr.Blocks(title="Hindi Tokenizer", head=highlight_js) as demo:
+with gr.Blocks(title="Hindi Tokenizer") as demo:
+    # Inject JavaScript for highlighting at the top of the page
+    gr.HTML(highlight_js)
+    
     gr.Markdown("## 🔡 Hindi BPE Tokenizer — Encode / Decode")
     
     # Hidden component to store token data
     token_data_store = gr.State(value="")
 
     with gr.Tab("Encode"):
+        # Example texts
+        example_1 = "1,200 ईसा पूर्व संस्कृत भाषा संपूर्ण भारतीय उपमहाद्वीप में फैली हुए थी और तब तक यहां पर हिंदू धर्म का उद्धव हो चुका था और ऋग्वेद की रचना भी हो चुकी थी।[20] इसी समय बौद्ध एवं जैन धर्म उत्पन्न हो रहे होते थे।[21] प्रारंभिक राजनीतिक एकत्रीकरण ने गंगा बेसिन में स्थित मौर्य और गुप्त साम्राज्यों को जन्म दिया।[22] उनका समाज विस्तृत सृजनशीलता से भरा हुआ था। [23]"
+        
+        example_2 = "भारत की सकल घरेलू उत्पाद (जीडीपी) की वृद्धि दर दूसरी तिमाही में 8.2 प्रतिशत बढ़ी। सरकारी आंकड़ों के अनुसार पिछले वित्त वर्ष की समान तिमाही में यह 5.6 प्रतिशत थी। सरकार की ओर से जारी आंकड़ों के अनुसार भारतीय अर्थव्यवस्था ने जुलाई-सितंबर तिमाही में 8.2 प्रतिशत की वृद्धि दर हासिल की। यह छह तिमाहियों का उच्चतम स्तर है। ऐसा इसलिए हुआ क्योंकि जीएसटी दर में कटौती से उपभोग बढ़ने की उम्मीद में कारखानों ने अधिक उत्पाद तैयार किए।"
+        
+        example_3 = "मुंशी प्रेमचंद की एक लोकप्रिय कहानी 'पूस की रात' है, जो एक गरीब किसान, हल्कू की कहानी है। कहानी में दिखाया गया है कि कैसे हल्कू और उसकी पत्नी को कड़ाके की ठंड में अपने गरीब झोपड़ी में रहना पड़ता है और कैसे कर्ज चुकाने के लिए उन्हें अपनी फसल बेचनी पड़ती है। एक और प्रसिद्ध कहानी 'नमक का दारोगा' है, जो सरकारी नौकरी और ईमानदारी के महत्व को दर्शाती है।"
+        
+        gr.Markdown("### 📚 Example Texts (Click to load and encode automatically)")
+        with gr.Row():
+            example_btn_1 = gr.Button("Example 1: Ancient India History", variant="secondary", size="sm")
+            example_btn_2 = gr.Button("Example 2: GDP Growth News", variant="secondary", size="sm")
+            example_btn_3 = gr.Button("Example 3: Premchand Stories", variant="secondary", size="sm")
+        
         text_in = gr.Textbox(label="Enter text", lines=3)
         
         gr.Markdown("### 📝 Input Text (Click words to highlight token IDs)")
@@ -591,6 +599,40 @@ with gr.Blocks(title="Hindi Tokenizer", head=highlight_js) as demo:
         ids_out = gr.Textbox(label="Token IDs (CSV)", lines=4, max_lines=10, interactive=False)
         btn = gr.Button("Encode", variant="primary")
         btn.click(encode_text, text_in, [ids_out, token_count_out, compression_ratio_out, token_ids_html_out, token_data_store, input_html_out])
+        
+        # Function to load example and trigger encode
+        def load_and_encode_example_1():
+            text = example_1
+            encode_results = encode_text(text)
+            return text, *encode_results
+        
+        def load_and_encode_example_2():
+            text = example_2
+            encode_results = encode_text(text)
+            return text, *encode_results
+        
+        def load_and_encode_example_3():
+            text = example_3
+            encode_results = encode_text(text)
+            return text, *encode_results
+        
+        example_btn_1.click(
+            fn=load_and_encode_example_1,
+            inputs=[],
+            outputs=[text_in, ids_out, token_count_out, compression_ratio_out, token_ids_html_out, token_data_store, input_html_out]
+        )
+        
+        example_btn_2.click(
+            fn=load_and_encode_example_2,
+            inputs=[],
+            outputs=[text_in, ids_out, token_count_out, compression_ratio_out, token_ids_html_out, token_data_store, input_html_out]
+        )
+        
+        example_btn_3.click(
+            fn=load_and_encode_example_3,
+            inputs=[],
+            outputs=[text_in, ids_out, token_count_out, compression_ratio_out, token_ids_html_out, token_data_store, input_html_out]
+        )
 
     with gr.Tab("Decode"):
         ids_in = gr.Textbox(label="Comma-separated token IDs", lines=4)
